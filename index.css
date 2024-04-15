@@ -110,6 +110,7 @@ form input {
     color: var(--text-color);
     outline: none;
     width: 350px;
+    text-align: center;
     margin-top: 5px;
     border-radius: 50px;
     color: #FFF;
