@@ -52,42 +52,33 @@ class UVServiceWorker extends EventEmitter {
         };
     };
     async fetch({ request }) {
-    if (!request.url.startsWith(location.origin + (this.config.prefix || '/service/'))) {
-        return fetch(request);
-    };
-
-    try {
-        const ultraviolet = new Ultraviolet(this.config);
-
-        if (typeof this.config.construct === 'function') {
-            this.config.construct(ultraviolet, 'service');
+        if (!request.url.startsWith(location.origin + (this.config.prefix || '/service/'))) {
+            return fetch(request);
         };
+        try {
 
-        const db = await ultraviolet.cookie.db();
+            const ultraviolet = new Ultraviolet(this.config);
 
-        ultraviolet.meta.origin = location.origin;
-        ultraviolet.meta.base = ultraviolet.meta.url = new URL(ultraviolet.sourceUrl(request.url));
+            if (typeof this.config.construct === 'function') {
+                this.config.construct(ultraviolet, 'service');
+            };
 
-        const requestCtx = new RequestContext(
-            request, 
-            this, 
-            ultraviolet, 
-            !this.method.empty.includes(request.method.toUpperCase()) ? await request.blob() : null
-        );
+            const db = await ultraviolet.cookie.db();
 
-        const response = await fetch(requestCtx.send);
+            ultraviolet.meta.origin = location.origin;
+            ultraviolet.meta.base = ultraviolet.meta.url = new URL(ultraviolet.sourceUrl(request.url));
 
-        if (response.status === 0) {
+            const requestCtx = new RequestContext(
+                request, 
+                this, 
+                ultraviolet, 
+                !this.method.empty.includes(request.method.toUpperCase()) ? await request.blob() : null
+            );
+
+                if (response.status === 0) {
             const updatedResponse = new Response(null, { status: 500, statusText: 'Internal Server Error' });
             return updatedResponse;
         }
-
-        if (response.status === 500) {
-            return Promise.reject('');
-        }
-
-        const responseCtx = new ResponseContext(requestCtx, response, this);
-        const resEvent = new HookEvent(responseCtx, null, null); 
             
             if (ultraviolet.meta.url.protocol === 'blob:') {
                 requestCtx.blob = true;
@@ -125,6 +116,9 @@ class UVServiceWorker extends EventEmitter {
             if (response.status === 500) {
                 return Promise.reject('');
             };
+
+            const responseCtx = new ResponseContext(requestCtx, response, this);
+            const resEvent = new HookEvent(responseCtx, null, null);
 
             this.emit('beforemod', resEvent);
             if (resEvent.intercepted) return resEvent.returnValue;
