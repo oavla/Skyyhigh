@@ -15,13 +15,23 @@
 
 body {
     margin: 0;
-    background: #111;
+    background-color: black;
     display: flex;
+    justify-content: center; 
+    align-items: center; 
     flex-direction: column;
     min-height: 100vh;
     animation: fadeInAnimation ease-in-out 0.3s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
+}
+
+h1 {
+    text-align: center;
+    font-size: 50px;
+    color: white;
+    border-radius: 5px; 
+    padding: 10px;
 }
 
 .fa-magnifying-glass {
@@ -98,7 +108,7 @@ form input {
     height: 48px;
     border: 1px solid rgb(255, 255, 255, .2);
     color: var(--text-color);
-    border-radius: 3px;
+    border-radius: 10px;
     outline: none;
     width: 350px;
     margin-top: 5px;
@@ -108,7 +118,7 @@ form input {
 
 form input:focus {
     border: 1px solid rgba(253, 253, 253, 0.514);
-    border-radius: 6px;
+    border-radius: 10px;
     animation: fadeInAnimation ease-in-out 0.3s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
