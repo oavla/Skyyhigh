@@ -79,6 +79,12 @@ class UVServiceWorker extends EventEmitter {
             const updatedResponse = new Response(null, { status: 500, statusText: 'Internal Server Error' });
             return updatedResponse;
         }
+
+            if (response.status === 500) {
+    return Promise.reject('');
+}
+            const responseCtx = new ResponseContext(requestCtx, response, this);
+const resEvent = new HookEvent(responseCtx, null, null);
             
             if (ultraviolet.meta.url.protocol === 'blob:') {
                 requestCtx.blob = true;
