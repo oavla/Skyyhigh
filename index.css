@@ -108,7 +108,6 @@ form input {
     height: 48px;
     border: 1px solid rgb(255, 255, 255, .2);
     color: var(--text-color);
-    border-radius: 10px;
     outline: none;
     width: 350px;
     margin-top: 5px;
@@ -117,9 +116,6 @@ form input {
 }
 
 form input:focus {
-    border: 1px solid rgba(253, 253, 253, 0.514);
-    border-radius: 10px;
-    animation: fadeInAnimation ease-in-out 0.3s;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
+    border: 1px solid rgba(87, 87, 87, 0.514);
+    border-radius: 50px;
 }
