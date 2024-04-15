@@ -52,39 +52,58 @@ class UVServiceWorker extends EventEmitter {
         };
     };
     async fetch({ request }) {
-        if (!request.url.startsWith(location.origin + (this.config.prefix || '/service/'))) {
-            return fetch(request);
-        };
-        try {
-
-            const ultraviolet = new Ultraviolet(this.config);
-
-            if (typeof this.config.construct === 'function') {
-                this.config.construct(ultraviolet, 'service');
-            };
-
-            const db = await ultraviolet.cookie.db();
-
-            ultraviolet.meta.origin = location.origin;
-            ultraviolet.meta.base = ultraviolet.meta.url = new URL(ultraviolet.sourceUrl(request.url));
-
-            const requestCtx = new RequestContext(
-                request, 
-                this, 
-                ultraviolet, 
-                !this.method.empty.includes(request.method.toUpperCase()) ? await request.blob() : null
-            );
-
-                if (response.status === 0) {
-            const updatedResponse = new Response(null, { status: 500, statusText: 'Internal Server Error' });
-            return updatedResponse;
-        }
+      if (!request.url.startsWith(location.origin + (this.config.prefix || '/service/'))) {
+          return fetch(request);
+      };
+      try {
+  
+          const ultraviolet = new Ultraviolet(this.config);
+  
+          if (typeof this.config.construct === 'function') {
+              this.config.construct(ultraviolet, 'service');
+          };
+  
+          const db = await ultraviolet.cookie.db();
+  
+          ultraviolet.meta.origin = location.origin;
+          ultraviolet.meta.base = ultraviolet.meta.url = new URL(ultraviolet.sourceUrl(request.url));
+  
+          const requestCtx = new RequestContext(
+              request, 
+              this, 
+              ultraviolet, 
+              !this.method.empty.includes(request.method.toUpperCase()) ? await request.blob() : null
+          );
+  
+          if (requestCtx.send.status === 0) {
+              const updatedResponse = new Response(null, { status: 500, statusText: 'Internal Server Error' });
+              return updatedResponse;
+          }
+  
+          try {
+            const fetchResponse = await fetch(requestCtx.send);
+            // Check if fetch was successful
+            if (!fetchResponse.ok) {
+                // Handle error response
+                return new Response(null, { status: 500, statusText: 'Internal Server Error' });
+            }
             
-            if (ultraviolet.meta.url.protocol === 'blob:') {
-                requestCtx.blob = true;
-                requestCtx.base = requestCtx.url = new URL(requestCtx.url.pathname);
-            };
-
+            // Rest of your code for handling successful response
+        } catch (error) {
+            // Handle fetch error
+            return new Response(null, { status: 500, statusText: 'Internal Server Error' });
+        }        
+  
+          if (fetchResponse.status === 500) {
+              return Promise.reject('');
+          };
+  
+          // Now you can use fetchResponse instead of response
+          if (ultraviolet.meta.url.protocol === 'blob:') {
+              requestCtx.blob = true;
+              requestCtx.base = requestCtx.url = new URL(requestCtx.url.pathname);
+          };
+    
             if (request.referrer && request.referrer.startsWith(location.origin)) {
                 const referer = new URL(ultraviolet.sourceUrl(request.referrer));
 
@@ -792,4 +811,3 @@ function eventTargetAgnosticAddListener(emitter, name, listener, flags) {
     throw new TypeError('The "emitter" argument must be of type EventEmitter. Received type ' + typeof emitter);
   }
 }
-
