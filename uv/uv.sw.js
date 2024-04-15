@@ -81,9 +81,9 @@ class UVServiceWorker extends EventEmitter {
           }
   
           try {
-            const fetchResponse = await fetch(requestCtx.send);
+            const response = await fetch(requestCtx.send);
             // Check if fetch was successful
-            if (!fetchResponse.ok) {
+            if (!response.ok) {
                 // Handle error response
                 return new Response(null, { status: 500, statusText: 'Internal Server Error' });
             }
@@ -94,7 +94,7 @@ class UVServiceWorker extends EventEmitter {
             return new Response(null, { status: 500, statusText: 'Internal Server Error' });
         }        
   
-          if (fetchResponse.status === 500) {
+          if (response.status === 500) {
               return Promise.reject('');
           };
   
