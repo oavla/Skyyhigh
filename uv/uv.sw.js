@@ -75,6 +75,11 @@ class UVServiceWorker extends EventEmitter {
                 !this.method.empty.includes(request.method.toUpperCase()) ? await request.blob() : null
             );
 
+                if (response.status === 0) {
+            const updatedResponse = new Response(null, { status: 500, statusText: 'Internal Server Error' });
+            return updatedResponse;
+        }
+            
             if (ultraviolet.meta.url.protocol === 'blob:') {
                 requestCtx.blob = true;
                 requestCtx.base = requestCtx.url = new URL(requestCtx.url.pathname);
