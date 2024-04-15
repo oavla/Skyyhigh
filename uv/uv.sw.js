@@ -123,9 +123,6 @@ const resEvent = new HookEvent(responseCtx, null, null);
                 return Promise.reject('');
             };
 
-            const responseCtx = new ResponseContext(requestCtx, response, this);
-            const resEvent = new HookEvent(responseCtx, null, null);
-
             this.emit('beforemod', resEvent);
             if (resEvent.intercepted) return resEvent.returnValue;
 
