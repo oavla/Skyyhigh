@@ -1,23 +1,73 @@
-const form = document.querySelector('form');
-const input = document.querySelector('input');
+ import { createBareServer } from '@tomphttp/bare-server-node';
+import express from "express";
+import { createServer } from "node:http";
+import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
+import { join } from "node:path";
+import { hostname } from "node:os";
+import { fileURLToPath } from "url";
 
-form.addEventListener('submit', async event => {
-    event.preventDefault();
-    window.navigator.serviceWorker.register('./sw.js', {
-        scope: __uv$config.prefix
-    }).then(() => {
-        let url = input.value.trim();
-        if (!isUrl(url)) url = 'https://www.google.com/search?q=' + url;
-        else if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'http://' + url;
+const publicPath = fileURLToPath(new URL("index.html", import.meta.url));
 
+const bare = createBareServer("bare.json");
+const app = express();
 
-        window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
-    });
+app.use(express.static(publicPath));
+app.use("/uv/", express.static(uvPath));
+
+// Error for everything else
+app.use((req, res) => {
+  res.status(404); 
+  res.sendFile(join(publicPath, "404.html"));
 });
 
-function isUrl(val = ''){
-    if (/^http(s?):\/\//.test(val) || val.includes('.') && val.substr(0, 1) !== ' ') return true;
-    return false;
-};
+const server = createServer();
 
+server.on("request", (req, res) => {
+  if (bare.shouldRoute(req)) {
+    bare.routeRequest(req, res);
+  } else {
+    app(req, res);
+  }
+});
 
+server.on("upgrade", (req, socket, head) => {
+  if (bare.shouldRoute(req)) {
+    bare.routeUpgrade(req, socket, head);
+  } else {
+    socket.end();
+  }
+});
+
+let port = parseInt(process.env.PORT || "");
+
+if (isNaN(port)) port = 3000;
+
+server.on("listening", () => {
+  const address = server.address();
+
+  // by default we are listening on 0.0.0.0 (every interface)
+  // we just need to list a few
+  console.log("Listening on:");
+  console.log(`\thttp://localhost:${address.port}`);
+  console.log(`\thttp://${hostname()}:${address.port}`);
+  console.log(
+    `\thttp://${
+      address.family === "IPv6" ? `[${address.address}]` : address.address
+    }:${address.port}`
+  );
+});
+
+// https://expressjs.com/en/advanced/healthcheck-graceful-shutdown.html
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+
+function shutdown() {
+  console.log("SIGTERM signal received: closing HTTP server");
+  server.close();
+  bare.close();
+  process.exit(0);
+}
+
+server.listen({
+  port,
+});
