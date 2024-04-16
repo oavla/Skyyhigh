@@ -70,7 +70,8 @@ h1 {
   }
 
 form input {
-    background: none;
+    background-color: black;
+    backdrop-filter: blur(10px); 
     font-family: inherit;
     padding: 0px 17px;
     height: 48px;
