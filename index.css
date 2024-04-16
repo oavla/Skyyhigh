@@ -47,56 +47,7 @@ h1 {
     color: white;
 }
 
-.navbar {
-  margin-top: 30px;
-  background-color: #252525b0;
-  backdrop-filter: blur(6px);
-  width: 50%;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgb(0, 0, 0);
-  position: fixed;
-  z-index: 999;
-  left: 50%;
-  transform: translateX(-50%);
-}
 
-.navbar ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-.navbar li {
-  padding: 10px;
-  float: left;
-  margin-left: 5px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.nav-links {
-  margin-top: 30px;
-  margin-left: 5px;
-  display: flex;
-  justify-content: center;
-}
-
-.navbar a {
-  display: block;
-  color: #fff;
-  text-align: center;
-  padding: 16px 20px;
-  text-decoration: none;
-  border-radius: 10px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; 
-}
-
-.navbar a:hover {
-  background-color: #4c4c4ca8; 
-  border-radius: 10px;
-  transform: scale(1.2);
 }
 
   #clock {
