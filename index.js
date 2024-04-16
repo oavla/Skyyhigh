@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 
 const publicPath = fileURLToPath(new URL("index.html", import.meta.url));
 
-const bare = createBareServer("bare.json");
+const bare = createBareServer("/bare/");
 const app = express();
 
 app.use(express.static(publicPath));
