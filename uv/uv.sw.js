@@ -4,7 +4,7 @@ importScripts('/uv/uv.config.js');
 class UVServiceWorker extends EventEmitter {     
     constructor(config = __uv$config) {
         super();
-        if (!config.bare) config.bare = '/bare.json';
+        if (!config.bare) config.bare = '/bare/';
         this.addresses = typeof config.bare === 'string' ? [ new URL(config.bare, location) ] : config.bare.map(str => new URL(str, location));
         this.headers = {
             csp: [
@@ -52,58 +52,34 @@ class UVServiceWorker extends EventEmitter {
         };
     };
     async fetch({ request }) {
-      if (!request.url.startsWith(location.origin + (this.config.prefix || '/service/'))) {
-          return fetch(request);
-      };
-      try {
-  
-          const ultraviolet = new Ultraviolet(this.config);
-  
-          if (typeof this.config.construct === 'function') {
-              this.config.construct(ultraviolet, 'service');
-          };
-  
-          const db = await ultraviolet.cookie.db();
-  
-          ultraviolet.meta.origin = location.origin;
-          ultraviolet.meta.base = ultraviolet.meta.url = new URL(ultraviolet.sourceUrl(request.url));
-  
-          const requestCtx = new RequestContext(
-              request, 
-              this, 
-              ultraviolet, 
-              !this.method.empty.includes(request.method.toUpperCase()) ? await request.blob() : null
-          );
-  
-          if (requestCtx.send.status === 0) {
-              const updatedResponse = new Response(null, { status: 500, statusText: 'Internal Server Error' });
-              return updatedResponse;
-          }
-  
-          try {
-            const response = await fetch(requestCtx.send);
-            // Check if fetch was successful
-            if (!response.ok) {
-                // Handle error response
-                return new Response(null, { status: 500, statusText: 'Internal Server Error' });
-            }
-            
-            // Rest of your code for handling successful response
-        } catch (error) {
-            // Handle fetch error
-            return new Response(null, { status: 500, statusText: 'Internal Server Error' });
-        }        
-  
-          if (response.status === 500) {
-              return Promise.reject('');
-          };
-  
-          // Now you can use fetchResponse instead of response
-          if (ultraviolet.meta.url.protocol === 'blob:') {
-              requestCtx.blob = true;
-              requestCtx.base = requestCtx.url = new URL(requestCtx.url.pathname);
-          };
-    
+        if (!request.url.startsWith(location.origin + (this.config.prefix || '/service/'))) {
+            return fetch(request);
+        };
+        try {
+
+            const ultraviolet = new Ultraviolet(this.config);
+
+            if (typeof this.config.construct === 'function') {
+                this.config.construct(ultraviolet, 'service');
+            };
+
+            const db = await ultraviolet.cookie.db();
+
+            ultraviolet.meta.origin = location.origin;
+            ultraviolet.meta.base = ultraviolet.meta.url = new URL(ultraviolet.sourceUrl(request.url));
+
+            const requestCtx = new RequestContext(
+                request, 
+                this, 
+                ultraviolet, 
+                !this.method.empty.includes(request.method.toUpperCase()) ? await request.blob() : null
+            );
+
+            if (ultraviolet.meta.url.protocol === 'blob:') {
+                requestCtx.blob = true;
+                requestCtx.base = requestCtx.url = new URL(requestCtx.url.pathname);
+            };
+
             if (request.referrer && request.referrer.startsWith(location.origin)) {
                 const referer = new URL(ultraviolet.sourceUrl(request.referrer));
 
