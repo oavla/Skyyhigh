@@ -38,68 +38,27 @@ h1 {
     color: white;
 }
 
-.logo-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 10%;
-}
+  #clock {
+  display: block;
+  color: #fff;
+  text-align: center;
+  margin-top: 30px;
+  padding: 15px;
+  position: fixed;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: bold;
+  background-color: #252525b0;
+  backdrop-filter: blur(3px); 
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgb(0, 0, 0);
+  transition: background-color 0.3s, transform 0.2s;
+  }
 
-.logo {
-    width: 150px;
-}
-
-.logo-wrapper .text {
-    font-size: 75px;
-    font-family: "Roboto";
-    color: #FFF;
-}
-
-.logo-wrapper h1 {
-    color: white;
-}
-
-footer {
-    margin-top: auto;
-    width: 93%;
-    align-self: center;
-    height: 80px;
-    display: flex;
-    justify-content: left;
-    align-items: center;
-}
-
-footer a,
-footer span {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #FFF;
-    font-size: 15px;
-}
-
-footer a {
-    cursor: pointer;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
-
-form {
-    display: flex;
-    justify-content: center;
-}
-
-.desc {
-    display: flex;
-    justify-content: center;
-}
-
-.desc p {
-    width: 560px;
-    color: rgba(253, 253, 253, 0.514);
-}
+  #clock:hover {
+    background-color: #4c4c4ca8; 
+    backdrop-filter: blur(3px);
+  }
 
 form input {
     background: none;
