@@ -1,6 +1,6 @@
 self.__uv$config = {
     prefix: '/uv/service/',
-    bare: 'https://sindoabyss.lospenitentes.com/bare/',
+    bare: 'https://skibiditoiletrizz.flz.ca/bare/',
     encodeUrl: Ultraviolet.codec.xor.encode,
     decodeUrl: Ultraviolet.codec.xor.decode,
     handler: '/uv/uv.handler.js',
